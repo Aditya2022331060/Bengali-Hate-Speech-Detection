@@ -1,0 +1,92 @@
+[
+  {
+    "id": "s1",
+    "comment": "ধন্যবাদ বর্ডার গার্ড দেরকে এভাবে পাহারা দিতে হবে",
+    "category": "National",
+    "subcategory": "test",
+    "type_of_hate": "None",
+    "severity_of_hate": "Little to None",
+    "target_of_hate": "None"
+  },
+  {
+    "id": "s2",
+    "comment": "এই শালার বাচ্চারা সব চোর দেশ লুটে খাচ্ছে",
+    "category": "Politics",
+    "subcategory": "test",
+    "type_of_hate": "Abusive",
+    "severity_of_hate": "Severe",
+    "target_of_hate": "Individual"
+  },
+  {
+    "id": "s3",
+    "comment": "হিন্দুদের দেশ থেকে বের করে দাও",
+    "category": "Religion",
+    "subcategory": "test",
+    "type_of_hate": "Religious Hate",
+    "severity_of_hate": "Severe",
+    "target_of_hate": "Community"
+  },
+  {
+    "id": "s4",
+    "comment": "মেয়েদের রাজনীতিতে আসা উচিত না",
+    "category": "Politics",
+    "subcategory": "test",
+    "type_of_hate": "Sexism",
+    "severity_of_hate": "Mild",
+    "target_of_hate": "Individual"
+  },
+  {
+    "id": "s5",
+    "comment": "আজকের খেলা খুব ভালো হয়েছে",
+    "category": "Sports",
+    "subcategory": "test",
+    "type_of_hate": "None",
+    "severity_of_hate": "Little to None",
+    "target_of_hate": "None"
+  },
+  {
+    "id": "s6",
+    "comment": "সরকার জনগণের টাকা মেরে দিচ্ছে",
+    "category": "Politics",
+    "subcategory": "test",
+    "type_of_hate": "Political Hate",
+    "severity_of_hate": "Mild",
+    "target_of_hate": "Organization"
+  },
+  {
+    "id": "s7",
+    "comment": "ওই বদমাশটাকে ধরে পিটাও",
+    "category": "National",
+    "subcategory": "test",
+    "type_of_hate": "Abusive",
+    "severity_of_hate": "Severe",
+    "target_of_hate": "Individual"
+  },
+  {
+    "id": "s8",
+    "comment": "শালা কুত্তার বাচ্চা",
+    "category": "Miscellaneous",
+    "subcategory": "test",
+    "type_of_hate": "Profane",
+    "severity_of_hate": "Severe",
+    "target_of_hate": "Individual"
+  },
+  {
+    "id": "s9",
+    "comment": "এই সম্প্রদায়ের লোকগুলো সব সন্ত্রাসী",
+    "category": "Religion",
+    "subcategory": "test",
+    "type_of_hate": "Religious Hate",
+    "severity_of_hate": "Mild",
+    "target_of_hate": "Community"
+  },
+  {
+    "id": "s10",
+    "comment": "বাংলাদেশ ক্রিকেট দল অসাধারণ খেলেছে",
+    "category": "Sports",
+    "subcategory": "test",
+    "type_of_hate": "None",
+    "severity_of_hate": "Little to None",
+    "target_of_hate": "None"
+  }
+]

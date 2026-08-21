@@ -1,0 +1,79 @@
+{
+  "dataset_name": "BanglaMultiHate (train.json)",
+  "total_samples": 35522,
+  "columns": [
+    "id",
+    "comment",
+    "category",
+    "subcategory",
+    "type_of_hate",
+    "severity_of_hate",
+    "target_of_hate",
+    "char_length",
+    "word_count"
+  ],
+  "type_of_hate_distribution": {
+    "None": 19954,
+    "Abusive": 8212,
+    "Political Hate": 4227,
+    "Profane": 2331,
+    "Religious Hate": 676,
+    "Sexism": 122
+  },
+  "target_of_hate_distribution": {
+    "None": 21190,
+    "Individual": 5646,
+    "Organization": 3846,
+    "Community": 2635,
+    "Society": 2205
+  },
+  "severity_of_hate_distribution": {
+    "Little to None": 23489,
+    "Mild": 6853,
+    "Severe": 5180
+  },
+  "category_distribution": {
+    "National": 12195,
+    "International": 7485,
+    "Politics": 6711,
+    "Sports": 3923,
+    "Miscellaneous": 2827,
+    "Entertainment": 1420,
+    "Disaster": 357,
+    "Religion": 221,
+    "Opinion": 100,
+    "History": 74,
+    "Celebrities ": 50,
+    "Geopolitics": 38,
+    "Science": 38,
+    "Lifestyle": 37,
+    "Fashion": 22,
+    "Health": 10,
+    "Business": 5,
+    "Technology": 5,
+    "Literature": 4
+  },
+  "text_stats": {
+    "char_length_mean": 78.2,
+    "char_length_median": 51.0,
+    "char_length_max": 3710,
+    "char_length_p95": 210.0,
+    "word_count_mean": 13.8,
+    "word_count_median": 9.0,
+    "word_count_max": 629,
+    "word_count_p95": 36.0
+  },
+  "consistency_violations": {
+    "total_violations": 0,
+    "violation_rate_pct": 0.0,
+    "gt_is_clean": true
+  },
+  "class_imbalance": {
+    "most_frequent_type": "None",
+    "least_frequent_type": "Sexism",
+    "imbalance_ratio_type": 163.6,
+    "most_frequent_target": "None",
+    "least_frequent_target": "Society",
+    "imbalance_ratio_target": 9.6
+  }
+}

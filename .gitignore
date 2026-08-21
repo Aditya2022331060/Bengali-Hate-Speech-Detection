@@ -1,0 +1,31 @@
+# Python / PyTorch gitignore
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+ENV/
+.venv
+
+# Model checkpoints & large downloads
+banglaHate/models/*.pt
+*.bin
+*.safetensors
+*.zip
+
+# Temporary scripts / logs
+scratch/
+temp_out.txt
+test_tok.txt
+smoke_out.txt
+download_banglabert.py
+test_tigerllm_load.py
+run_smoke.py
+
+# IDE / System
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
