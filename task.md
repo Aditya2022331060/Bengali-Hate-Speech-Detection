@@ -31,7 +31,9 @@
   - Evaluated `BanglaT5` vs `Structured Linguistic Anchor` across 50 samples
   - Generated [`explanation_50_samples.json`](file:///c:/Users/avron/Downloads/TWP/banglaHate/results/explanation_50_samples.json)
   - Generated [`explanation_benchmark_report.md`](file:///c:/Users/avron/Downloads/TWP/banglaHate/results/explanation_benchmark_report.md)
-- [ ] Step 4 Part 2: Generate bulk 5,000 silver explanations (scheduled for later as requested)
+- [x] Step 4 Part 2: Generate bulk 5,000 silver explanations — **COMPLETED**
+  - Generated **4,998 stratified silver rationales** in [`silver_explanations_5k.json`](file:///c:/Users/avron/Downloads/TWP/banglaHate/results/silver_explanations_5k.json)
+  - Created sample inspection report [`silver_explanations_sample_preview.md`](file:///c:/Users/avron/Downloads/TWP/banglaHate/results/silver_explanations_sample_preview.md)
 
 ## Step 5: Model Architecture & Loss Implementation
 - [ ] Implement `model.py` (ConsistencyConstrainedMTL)
