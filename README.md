@@ -113,18 +113,18 @@ The notebook will:
 
 ### Step 2 — Human Verification of Silver Explanations
 
-The file `silver_explanations.csv` contains **2,000 AI-generated Bengali explanations** for hate speech annotations. These need to be human-verified before being used to train the generative explanation head.
+The file `silver_explanations.csv` contains **2,000 AI-generated Bengali explanations** based on **real, original comments** sampled from the `train.json` dataset (no synthetic comments were used). These explanations need to be human-verified before being used to train the generative explanation head.
 
 **Each row has these columns:**
 
 | Column | Description |
 |--------|-------------|
 | `original_idx` | Row index in original dataset |
-| `comment` | Original Bengali comment |
-| `type_of_hate` | Hate type label |
-| `target_of_hate` | Target label |
-| `severity_of_hate` | Severity label |
-| `silver_explanation` | ✏️ **The Bengali explanation — this is what you verify/edit** |
+| `comment` | Original, real Bengali comment from the dataset |
+| `type_of_hate` | Human-annotated Hate type label |
+| `target_of_hate` | Human-annotated Target label |
+| `severity_of_hate` | Human-annotated Severity label |
+| `silver_explanation` | ✏️ **The AI-generated Bengali explanation — this is what you verify/edit** |
 | `source` | How it was generated (`rule-contextual` or `rule-based`) |
 | `verification_status` | Fill in: `approved`, `edited`, or `rejected` |
 | `notes` | Optional notes for yourself |
@@ -146,18 +146,6 @@ The file `silver_explanations.csv` contains **2,000 AI-generated Bengali explana
 2. Make sure to open with **UTF-8 encoding** (use Data → From Text/CSV, not double-click)
 3. Edit the `silver_explanation` and `verification_status` columns
 4. Save as CSV (UTF-8) when done
-
-#### Option C: Browser Tool (for rapid keyboard-based review)
-
-A dark-themed web tool is also available for faster keyboard-driven review:
-
-1. Start a local server:
-   ```bash
-   cd Bengali_hate_speech_detection
-   python -m http.server 8080
-   ```
-2. Open: `http://localhost:8080/verify_explanations.html`
-3. Press `A` = Approve, `E` = Save Edit, `R` = Reject, `S` = Save to file
 
 ---
 
