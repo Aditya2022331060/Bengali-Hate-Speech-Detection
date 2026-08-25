@@ -113,68 +113,51 @@ The notebook will:
 
 ### Step 2 — Human Verification of Silver Explanations
 
-The file `silver_explanations.json` contains **2,000 AI-generated Bengali explanations** for hate speech annotations. These are used to train the generative explanation head (exp3 + exp4).
+The file `silver_explanations.csv` contains **2,000 AI-generated Bengali explanations** for hate speech annotations. These need to be human-verified before being used to train the generative explanation head.
 
-**Each entry looks like:**
-```json
-{
-  "original_idx": 1234,
-  "comment": "এই সরকার দেশটাকে ধ্বংস করে দিচ্ছে",
-  "type_of_hate": "Political Hate",
-  "target_of_hate": "Organization",
-  "severity_of_hate": "Severe",
-  "silver_explanation": "মন্তব্যটিতে \"সরকার\" ও \"ধ্বংস\" শব্দ ব্যবহার করে রাজনৈতিক বিদ্বেষ প্রকাশ করা হয়েছে। এটি নির্দিষ্ট সংগঠনের বিরুদ্ধে তীব্র ও গুরুতর রাজনৈতিক ঘৃণামূলক বক্তব্য।",
-  "source": "rule-contextual",
-  "verified": false
-}
-```
+**Each row has these columns:**
 
-#### How to Use `verify_explanations.html`
+| Column | Description |
+|--------|-------------|
+| `original_idx` | Row index in original dataset |
+| `comment` | Original Bengali comment |
+| `type_of_hate` | Hate type label |
+| `target_of_hate` | Target label |
+| `severity_of_hate` | Severity label |
+| `silver_explanation` | ✏️ **The Bengali explanation — this is what you verify/edit** |
+| `source` | How it was generated (`rule-contextual` or `rule-based`) |
+| `verification_status` | Fill in: `approved`, `edited`, or `rejected` |
+| `notes` | Optional notes for yourself |
 
-This is a browser-based tool for rapidly reviewing and verifying the generated explanations.
+#### Option A: Google Sheets (Recommended — no install needed)
 
-**Setup (one-time):**
-
-1. Clone or pull this repository:
+1. Pull the repo:
    ```bash
    git clone https://github.com/Aditya2022331060/Bengali_hate_speech_detection.git
-   cd Bengali_hate_speech_detection
    ```
+2. Go to [sheets.google.com](https://sheets.google.com) → **Import** → Upload `silver_explanations.csv`
+3. Edit the `silver_explanation` column directly in the cell
+4. Fill in the `verification_status` column: type `approved`, `edited`, or `rejected`
+5. When done, **File → Download → CSV** and save as `silver_explanations_verified.csv`
 
-2. Start a local HTTP server in the repo folder:
+#### Option B: Microsoft Excel
+
+1. Open `silver_explanations.csv` directly in Excel
+2. Make sure to open with **UTF-8 encoding** (use Data → From Text/CSV, not double-click)
+3. Edit the `silver_explanation` and `verification_status` columns
+4. Save as CSV (UTF-8) when done
+
+#### Option C: Browser Tool (for rapid keyboard-based review)
+
+A dark-themed web tool is also available for faster keyboard-driven review:
+
+1. Start a local server:
    ```bash
+   cd Bengali_hate_speech_detection
    python -m http.server 8080
    ```
-
-3. Open your browser and go to:
-   ```
-   http://localhost:8080/verify_explanations.html
-   ```
-
-> ⚠️ **Important:** You must use a local server (`python -m http.server`). Opening the HTML file directly via `file://` will not work because browsers block local JSON loading for security reasons.
-
-**Verification Workflow:**
-
-For each sample you will see:
-- The original Bengali comment
-- Its classification labels (Hate Type / Target / Severity)
-- The AI-generated Bengali explanation (editable)
-
-Use the keyboard shortcuts to review quickly:
-
-| Key | Action |
-|-----|--------|
-| `A` | ✅ **Approve** — explanation is accurate and well-written |
-| `E` | ✏️ **Save Edit** — edit the text first, then press E to save |
-| `R` | ❌ **Reject** — explanation is wrong or irrelevant (excluded from training) |
-| `← →` | Navigate between samples |
-| `S` | 💾 Save progress to `silver_explanations_verified.json` |
-
-**Filtering:**
-Use the filter buttons at the top to focus on specific hate types or review status (Pending / Approved / Edited / Rejected).
-
-**Saving:**
-Press `S` at any time to download `silver_explanations_verified.json`. This file contains all approved + edited samples and is used in Phase 3 training.
+2. Open: `http://localhost:8080/verify_explanations.html`
+3. Press `A` = Approve, `E` = Save Edit, `R` = Reject, `S` = Save to file
 
 ---
 
