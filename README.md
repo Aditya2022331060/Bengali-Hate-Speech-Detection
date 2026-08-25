@@ -1,97 +1,229 @@
-# 🇧🇩 Consistency-Constrained Multi-Task Bengali Hate Speech Detection with Faithfulness-Evaluated Generative Explanations
+# 🧠 BanglaHateML — Bengali Hate Speech Detection with Consistency-Constrained Multi-Task Learning
 
-> **Target Venue**: ICCIT 2026 (Primary) / IEEE Access / EMNLP 2027 BLP Workshop  
-> **Authors**: Angkon Roy & Nahid Gazi (SUST CSE)
-
----
-
-## 📌 Executive Summary
-
-This repository contains the complete codebase, dataset analytics, model architectures, loss formulations, and benchmark evaluations for **multi-task Bengali hate speech classification** across 3 fine-grained dimensions:
-1. **Hate Type** (*None, Abusive, Political Hate, Profane, Religious Hate, Sexism*) — 6 classes
-2. **Target** (*None, Individual, Organization, Community, Society*) — 5 classes
-3. **Severity** (*Little to None, Mild, Severe*) — 3 classes
+> **Target Venue:** ICCIT 2026  
+> **Task:** Multi-label Bengali hate speech classification with logically consistent label prediction and generative explanations.
 
 ---
 
-## 🚀 Current Progress Status (Steps 1 – 4 Part 1 COMPLETED)
+## 📌 Project Overview
 
-- [x] **Step 1: Environment & Project Setup** — PyTorch `2.5.1+cu121` + Transformers `4.44.2` active on local NVIDIA GPU (RTX 4050).
-- [x] **Step 2: Exploratory Data Analysis (EDA)** — Processed **35,522 samples** (`train.json`), computed Focal Loss $\alpha$ weights, proved **0.0% Ground Truth Consistency Violations**, and generated 3 publication-ready figures (`banglaHate/figures/`).
-- [x] **Step 3: Pipeline Smoke Test (`smoke_test.py`)** — **All 8 automated smoke tests passed in 12.7s** on GPU (`ConsistencyConstrainedMTL` with 110.6M params, Focal Loss + Consistency Penalty Loss).
-- [x] **Step 4 (Part 1): Bengali Explanation Quality Benchmark** — Extracted 50 stratified comments, generated structured rationales, and saved benchmark reports (`explanation_50_samples.json` and `explanation_benchmark_report.md`).
-- [ ] **Step 4 (Part 2)**: Bulk 5,000 Silver Explanation Generation (Scheduled next).
-- [ ] **Step 5**: Training 4 BanglaBERT Ablation Models + TigerLLM / Llama Baselines.
-- [ ] **Step 6**: Comprehensive Evaluation (Macro F1, CVR, ERASER Faithfulness Comp/Suff/AOPC).
+This project builds a lightweight, locally-runnable Bengali hate speech detection model that:
+
+1. **Classifies** each comment on three dimensions simultaneously:
+   - **Hate Type** — None, Abusive, Political Hate, Profane, Religious Hate, Sexism
+   - **Target** — None, Individual, Organization, Community, Society
+   - **Severity** — Little to None, Mild, Severe
+
+2. **Enforces logical consistency** — A custom `ConsistencyPenaltyLoss` prevents contradictory predictions (e.g., "not hateful" but "targets an individual") using a soft differentiable penalty.
+
+3. **Generates Bengali explanations** — An LSTM decoder trained on silver-standard explanations outputs a rationale for each prediction.
 
 ---
 
-## 📁 Repository Directory Structure
+## 🏗️ Model Architecture
+
+```
+Input Comment (Bengali Text)
+        │
+   [BanglaBERT Encoder]  ← csebuetnlp/banglabert (110M params)
+        │
+   [CLS Token Embedding]
+   ┌────┴────────────────────────────────┐
+   │             │                      │
+[Type Head]  [Target Head]  [Severity Head]
+   │             │                      │
+ 6 classes    5 classes              3 classes
+```
+
+**Loss Function:**
+
+$$\mathcal{L}_{total} = \mathcal{L}_{focal}^{type} + \mathcal{L}_{focal}^{target} + \mathcal{L}_{focal}^{severity} + \lambda \cdot \mathcal{L}_{consist}$$
+
+The `ConsistencyPenaltyLoss` enforces:
+- If `type = None` → `target` must be `None` AND `severity` must be `Little to None`
+- If `severity = Severe` → `type` cannot be `None`
+
+---
+
+## 📊 Phase 1 Results (exp1 vs exp2)
+
+| Metric | exp1: Baseline | exp2: + Consistency |
+|--------|:--------------:|:-------------------:|
+| Type F1 | 0.5237 | 0.5242 |
+| Target F1 | 0.5430 | 0.5456 |
+| Severity F1 | 0.6060 | 0.6071 |
+| **Avg F1** | 0.5576 | **0.5589** |
+| **CVR** | 1.91% | **0.00%** |
+
+**CVR (Consistency Violation Rate):** Percentage of test predictions that are logically contradictory. Adding our `ConsistencyPenaltyLoss` drives this from 1.91% → **0.00%** while maintaining (marginally improving) F1 — this is the core paper contribution.
+
+---
+
+## 📂 Repository Structure
 
 ```
 Bengali_hate_speech_detection/
-├── Dataset/                   # Raw & processed datasets (train.json, CSVs)
-├── banglaHate/
-│   ├── src/                   # PyTorch source code
-│   │   ├── dataset.py         # BanglaHateDataset PyTorch loader & tokenization
-│   │   ├── model.py           # ConsistencyConstrainedMTL architecture
-│   │   ├── losses.py          # FocalLoss + ConsistencyPenaltyLoss
-│   │   ├── eda.py             # 11-step comprehensive EDA script
-│   │   ├── smoke_test.py      # 8-stage automated pipeline sanity check
-│   │   └── compare_explanation_generators.py # Step 4 Part 1 50-sample benchmark
-│   ├── figures/               # 300 DPI publication figures
-│   │   ├── fig1_class_distributions.png
-│   │   ├── fig2_cooccurrence_heatmaps.png
-│   │   └── fig3_text_length_distribution.png
-│   ├── results/               # Experiment logs & benchmark outputs
-│   │   ├── eda_report.json
-│   │   ├── explanation_50_samples.json
-│   │   └── explanation_benchmark_report.md
-│   └── data/                  # Processed CSVs (train_primary.csv)
-├── implementation_plan.md     # Implementation roadmap
-├── implementation_plan2.md    # 6-week research execution calendar
-├── walkthrough.md             # Complete step-by-step walkthrough & results
-├── task.md                    # Task tracker
-├── presentation.tex           # LaTeX Beamer presentation slides
-└── README.md                  # Main documentation
+├── notebooks/
+│   ├── 01_data_preparation.ipynb       ← EDA, dataset analysis
+│   ├── 02_silver_explanations.ipynb    ← Silver explanation generation (Kaggle GPU)
+│   ├── 03_training_experiments.ipynb   ← Training: exp1 (baseline) + exp2 (consistency)
+│   ├── 04_evaluation.ipynb             ← Detailed evaluation + ERASER faithfulness
+│   └── 05_llm_benchmarks.ipynb         ← Compare vs Gemini/TigerLLM-1B
+│
+├── banglaHate/src/
+│   ├── model.py                        ← ConsistencyConstrainedMTL architecture
+│   ├── losses.py                       ← ConsistencyPenaltyLoss + FocalLoss
+│   └── dataset.py                      ← BanglaHateDataset (multi-task labels + explanations)
+│
+├── paper/
+│   └── main.tex                        ← ICCIT 2026 paper (LaTeX)
+│
+├── silver_explanations.json            ← 2,000 generated Bengali explanations for verification
+├── verify_explanations.html            ← Human verification web tool (see below)
+└── README.md                           ← This file
 ```
 
 ---
 
-## 🛠️ Quick Start & Running Scripts
+## 🚀 How to Run
 
-### 1. Run Exploratory Data Analysis (EDA)
-```bash
-python banglaHate/src/eda.py
-```
+### Step 1 — Run Training on Kaggle (Phase 1)
 
-### 2. Run Pipeline Smoke Test (Sanity Check)
-```bash
-python banglaHate/src/smoke_test.py
-```
+> **No API key needed. No local GPU required.**
 
-### 3. Run Step 4 (Part 1) Bengali Explanation Benchmark
-```bash
-python banglaHate/src/compare_explanation_generators.py
-```
+1. Go to [kaggle.com/code](https://www.kaggle.com/code) → **+ New Notebook**
+2. **File → Import Notebook** → Upload `notebooks/03_training_experiments.ipynb`
+3. **Add Input** → Search and add `nahidgazi/trainmultihate`
+4. **Accelerator → GPU T4 x2**
+5. **Save Version → Save & Run All (Commit)**
 
----
+The notebook will:
+- Auto-detect and split the dataset (80/10/10 stratified)
+- Run `exp1_baseline` (BanglaBERT + 3 heads)
+- Run `exp2_consistency` (+ ConsistencyPenaltyLoss)
+- Save model checkpoints and results to the Output tab (~8 hours)
 
-## 🧮 Mathematical Loss Formulation
-
-Our unified loss function combines Focal Loss for class imbalance, Soft Consistency Penalty ($\mathcal{L}_{\text{consist}}$) for logical constraint enforcement, and Cross-Entropy for explanation generation:
-
-$$\mathcal{L}_{\text{total}} = \mathcal{L}_{\text{focal}}^{\text{type}} + \mathcal{L}_{\text{focal}}^{\text{target}} + \mathcal{L}_{\text{focal}}^{\text{severity}} + \lambda \mathcal{L}_{\text{consist}} + \delta \mathcal{L}_{\text{gen}}$$
-
-Where the soft differentiable consistency penalty is defined as:
-$$\mathcal{L}_{\text{consist}} = \frac{1}{N} \sum_{i=1}^{N} \left[ P_i(\text{type=None}) \cdot P_i(\text{target}\neq\text{None}) + P_i(\text{type=None}) \cdot P_i(\text{sev}\neq\text{Little}) + 2 \cdot P_i(\text{type=None}) \cdot P_i(\text{sev=Severe}) \right]$$
+**Download from Output tab:**
+- `models/exp1_baseline_best.pt`
+- `models/exp2_consistency_best.pt`
+- `results/ablation_results.json`
+- `results/test_results.json`
 
 ---
 
-## 📄 Handover Notes for Collaborators
+### Step 2 — Human Verification of Silver Explanations
 
-If you are picking up work on this codebase:
-1. Read [`walkthrough.md`](file:///c:/Users/avron/Downloads/TWP/walkthrough.md) for full execution logs and figure previews.
-2. Read [`task.md`](file:///c:/Users/avron/Downloads/TWP/task.md) for the active checklist.
-3. Review [`presentation.tex`](file:///c:/Users/avron/Downloads/TWP/presentation.tex) for conference presentation slides.
-4. Next task to execute is **Step 4 Part 2** (Bulk Silver Explanation Generation) followed by **Step 5** (Model Training).
+The file `silver_explanations.json` contains **2,000 AI-generated Bengali explanations** for hate speech annotations. These are used to train the generative explanation head (exp3 + exp4).
+
+**Each entry looks like:**
+```json
+{
+  "original_idx": 1234,
+  "comment": "এই সরকার দেশটাকে ধ্বংস করে দিচ্ছে",
+  "type_of_hate": "Political Hate",
+  "target_of_hate": "Organization",
+  "severity_of_hate": "Severe",
+  "silver_explanation": "মন্তব্যটিতে \"সরকার\" ও \"ধ্বংস\" শব্দ ব্যবহার করে রাজনৈতিক বিদ্বেষ প্রকাশ করা হয়েছে। এটি নির্দিষ্ট সংগঠনের বিরুদ্ধে তীব্র ও গুরুতর রাজনৈতিক ঘৃণামূলক বক্তব্য।",
+  "source": "rule-contextual",
+  "verified": false
+}
+```
+
+#### How to Use `verify_explanations.html`
+
+This is a browser-based tool for rapidly reviewing and verifying the generated explanations.
+
+**Setup (one-time):**
+
+1. Clone or pull this repository:
+   ```bash
+   git clone https://github.com/Aditya2022331060/Bengali_hate_speech_detection.git
+   cd Bengali_hate_speech_detection
+   ```
+
+2. Start a local HTTP server in the repo folder:
+   ```bash
+   python -m http.server 8080
+   ```
+
+3. Open your browser and go to:
+   ```
+   http://localhost:8080/verify_explanations.html
+   ```
+
+> ⚠️ **Important:** You must use a local server (`python -m http.server`). Opening the HTML file directly via `file://` will not work because browsers block local JSON loading for security reasons.
+
+**Verification Workflow:**
+
+For each sample you will see:
+- The original Bengali comment
+- Its classification labels (Hate Type / Target / Severity)
+- The AI-generated Bengali explanation (editable)
+
+Use the keyboard shortcuts to review quickly:
+
+| Key | Action |
+|-----|--------|
+| `A` | ✅ **Approve** — explanation is accurate and well-written |
+| `E` | ✏️ **Save Edit** — edit the text first, then press E to save |
+| `R` | ❌ **Reject** — explanation is wrong or irrelevant (excluded from training) |
+| `← →` | Navigate between samples |
+| `S` | 💾 Save progress to `silver_explanations_verified.json` |
+
+**Filtering:**
+Use the filter buttons at the top to focus on specific hate types or review status (Pending / Approved / Edited / Rejected).
+
+**Saving:**
+Press `S` at any time to download `silver_explanations_verified.json`. This file contains all approved + edited samples and is used in Phase 3 training.
+
+---
+
+## 📋 Full Pipeline
+
+| Phase | What | Where | Status |
+|-------|------|-------|--------|
+| Phase 1 | Train exp1 + exp2 | Kaggle GPU | ✅ Done |
+| Phase 2 | Generate + verify silver explanations | Local (this tool) | 🔄 In Progress |
+| Phase 3 | Train exp3 + exp4 (generative head) | Kaggle GPU | ⏳ Pending |
+| Phase 4 | LLM benchmarks + ERASER evaluation | Kaggle GPU | ⏳ Pending |
+| Phase 5 | Write paper | Local | ⏳ Pending |
+
+---
+
+## 📦 Dataset
+
+- **Source:** [nahidgazi/trainmultihate](https://www.kaggle.com/datasets/nahidgazi/trainmultihate)
+- **Total Samples:** 35,522
+- **Split:** 80% train / 10% dev / 10% test (stratified by hate type)
+- **Labels:** Multi-task — (Hate Type × Target × Severity)
+
+| Class | Count |
+|-------|------:|
+| None | 19,954 |
+| Abusive | 8,212 |
+| Political Hate | 4,227 |
+| Profane | 2,331 |
+| Religious Hate | 676 |
+| Sexism | 122 |
+
+---
+
+## 📝 Citation
+
+*Paper submitted to ICCIT 2026. Citation will be added upon acceptance.*
+
+---
+
+## 🔧 Requirements
+
+```bash
+pip install torch transformers scikit-learn pandas numpy matplotlib seaborn tqdm
+```
+
+**Python:** 3.10+  
+**GPU:** Required for training (Kaggle T4 recommended)  
+**Inference:** CPU-compatible
+
+---
+
+*Last Updated: August 2026*
