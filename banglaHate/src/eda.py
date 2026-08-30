@@ -59,7 +59,7 @@ print("\n" + "=" * 70)
 print("STEP 2: Label Distribution Statistics")
 print("=" * 70)
 
-TYPE_ORDER = ['None', 'Abusive', 'Political Hate', 'Profane', 'Religious Hate', 'Sexism']
+TYPE_ORDER = ['None', 'Abusive', 'Political Hate', 'Religious Hate', 'Gender Hate']
 TARGET_ORDER = ['None', 'Individual', 'Organization', 'Community', 'Society']
 SEVERITY_ORDER = ['Little to None', 'Mild', 'Severe']
 

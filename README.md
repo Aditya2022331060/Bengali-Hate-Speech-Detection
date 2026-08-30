@@ -10,7 +10,7 @@
 This project builds a lightweight, locally-runnable Bengali hate speech detection model that:
 
 1. **Classifies** each comment on three dimensions simultaneously:
-   - **Hate Type** — None, Abusive, Political Hate, Profane, Religious Hate, Sexism
+   - **Hate Type** — None, Abusive, Political Hate, Religious Hate, Gender Hate
    - **Target** — None, Individual, Organization, Community, Society
    - **Severity** — Little to None, Mild, Severe
 
@@ -32,7 +32,7 @@ Input Comment (Bengali Text)
    │             │                      │
 [Type Head]  [Target Head]  [Severity Head]
    │             │                      │
- 6 classes    5 classes              3 classes
+ 5 classes    5 classes              3 classes
 ```
 
 **Loss Function:**

@@ -35,7 +35,7 @@ nahid.gazi@example.com}
 \maketitle
 
 \begin{abstract}
-Hate speech detection is often formulated as a disjoint classification task, ignoring the intrinsic logical relationships between hate type, target, and severity. In low-resource languages like Bengali, large language models (LLMs) struggle to maintain this structural consistency during zero-shot generation, often hallucinating impossible combinations (e.g., classifying a text as having no hate speech, but simultaneously targeting an individual with severe intensity). In this paper, we propose a Consistency-Constrained Multi-Task Learning (MTL) architecture using BanglaBERT to simultaneously predict Hate Type (6 classes), Target (5 classes), and Severity (3 classes). To mathematically bound the loss surface and prevent contradictions, we introduce a novel, fully differentiable Soft Consistency Loss. Furthermore, to improve interpretability, our model integrates a generative decoder trained on high-quality silver explanations, outputting natural language rationales for its classifications. Experimental results on a highly imbalanced dataset of 35,522 Bengali comments demonstrate that our 110M parameter model achieves a Consistency Violation Rate (CVR) of 0\%, significantly outperforming frontier models like TigerLLM-1B and Gemini 1.5 in both consistency and inference latency, while maintaining highly competitive Macro F1 scores.
+Hate speech detection is often formulated as a disjoint classification task, ignoring the intrinsic logical relationships between hate type, target, and severity. In low-resource languages like Bengali, large language models (LLMs) struggle to maintain this structural consistency during zero-shot generation, often hallucinating impossible combinations (e.g., classifying a text as having no hate speech, but simultaneously targeting an individual with severe intensity). In this paper, we propose a Consistency-Constrained Multi-Task Learning (MTL) architecture using BanglaBERT to simultaneously predict Hate Type (5 classes), Target (5 classes), and Severity (3 classes). To mathematically bound the loss surface and prevent contradictions, we introduce a novel, fully differentiable Soft Consistency Loss. Furthermore, to improve interpretability, our model integrates a generative decoder trained on high-quality silver explanations, outputting natural language rationales for its classifications. Experimental results on a highly imbalanced dataset of 35,522 Bengali comments demonstrate that our 110M parameter model achieves a Consistency Violation Rate (CVR) of 0\%, significantly outperforming frontier models like TigerLLM-1B and Gemini 1.5 in both consistency and inference latency, while maintaining highly competitive Macro F1 scores.
 \end{abstract}
 
 \begin{IEEEkeywords}
@@ -64,7 +64,7 @@ Recent advancements in Bengali natural language processing have begun to focus h
 \subsection{Task Definition}
 Our system performs a multi-task classification across three dimensions:
 \begin{itemize}
-    \item \textbf{Hate Type}: None, Abusive, Political Hate, Profane, Religious Hate, Sexism.
+    \item \textbf{Hate Type}: None, Abusive, Political Hate, Religious Hate, Gender Hate.
     \item \textbf{Target}: None, Individual, Organization, Community, Society.
     \item \textbf{Severity}: Little to None, Mild, Severe.
 \end{itemize}
@@ -75,7 +75,7 @@ Our system performs a multi-task classification across three dimensions:
 % TODO: Describe the Generative Decoder (LSTM/Transformer).
 
 \subsection{Loss Formulation}
-Due to the extreme class imbalance (e.g., the 'Sexism' class is 163x rarer than 'None'), we utilize Focal Loss for the classification heads. The joint objective is defined as:
+Due to the extreme class imbalance (e.g., `Gender Hate' accounts for fewer than 1\% of training samples), we utilize Focal Loss for the classification heads. The joint objective is defined as:
 
 \begin{equation}
 \mathcal{L}_{\text{total}} = \mathcal{L}_{\text{focal}}^{\text{type}} + \mathcal{L}_{\text{focal}}^{\text{target}} + \mathcal{L}_{\text{focal}}^{\text{severity}} + \lambda \mathcal{L}_{\text{consist}} + \delta \mathcal{L}_{\text{gen}}
@@ -94,6 +94,8 @@ To enforce logical rules (e.g., \textit{If Type=None, Target MUST be None and Se
 \subsection{Dataset}
 % TODO: Describe the 35,522 training samples and the test split.
 % TODO: Reference the EDA heatmaps showing 0% ground truth violations.
+
+Following standard practices in Bengali NLP, we merged the linguistically overlapping `Profane' and `Abusive' categories from the original BanglaMultiHate taxonomy and adopted the term `Gender Hate' in place of `Sexism', resulting in five mutually exclusive hate types. This consolidation addresses two issues: (1) the semantic overlap between profane language and abusive language in colloquial Bengali, which caused high inter-annotator disagreement, and (2) the severe class imbalance of the original `Sexism' category (122 of 35,522 samples), which was insufficient for reliable classification.
 
 \subsection{Silver Explanation Generation}
 % TODO: Discuss using Gemini 1.5 API to generate the 5,000 training explanations.

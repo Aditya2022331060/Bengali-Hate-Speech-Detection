@@ -14,7 +14,7 @@ Architecture:
   ┌──────┐┌──────┐┌──────┐┌──────────┐
   │Type  ││Target││ Sev  ││ Gen Head │  (optional)
   │Head  ││ Head ││ Head ││ (Decoder)│
-  │→ 6   ││→ 5   ││→ 3   ││→ vocab  │
+  │→ 5   ││→ 5   ││→ 3   ││→ vocab  │
   └──────┘└──────┘└──────┘└──────────┘
 
 Each classification head: Linear(768, hidden) → ReLU → Dropout → Linear(hidden, n_classes)
@@ -62,7 +62,7 @@ class ConsistencyConstrainedMTL(nn.Module):
     Args:
         encoder_name: HuggingFace model name for the shared encoder.
                       Default: 'csebuetnlp/banglabert'.
-        num_type_labels: Number of hate type classes. Default: 6.
+        num_type_labels: Number of hate type classes. Default: 5.
         num_target_labels: Number of target classes. Default: 5.
         num_severity_labels: Number of severity classes. Default: 3.
         hidden_dim: Hidden dimension in classification heads. Default: 256.
@@ -72,7 +72,7 @@ class ConsistencyConstrainedMTL(nn.Module):
     """
 
     def __init__(self, encoder_name='csebuetnlp/banglabert',
-                 num_type_labels=6, num_target_labels=5, num_severity_labels=3,
+                 num_type_labels=5, num_target_labels=5, num_severity_labels=3,
                  hidden_dim=256, dropout=0.3, use_gen_head=False):
         super().__init__()
 

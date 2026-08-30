@@ -26,14 +26,17 @@ class BanglaHateDataset(Dataset):
       - Encoded labels for 3 classification tasks
       - Optional tokenized explanations for the generative head
 
-    Label encoding order (matches EDA findings):
-      type_of_hate:     ['None', 'Abusive', 'Political Hate', 'Profane', 'Religious Hate', 'Sexism']
+    Label encoding order (5-class taxonomy):
+      type_of_hate:     ['None', 'Abusive', 'Political Hate', 'Religious Hate', 'Gender Hate']
       target_of_hate:   ['None', 'Individual', 'Organization', 'Community', 'Society']
       severity_of_hate: ['Little to None', 'Mild', 'Severe']
     """
 
     # Canonical label orderings — these define the index positions
-    TYPE_LABELS = ['None', 'Abusive', 'Political Hate', 'Profane', 'Religious Hate', 'Sexism']
+    TYPE_LABELS = ['None', 'Abusive', 'Political Hate', 'Religious Hate', 'Gender Hate']
+
+    # Remap legacy labels from original BanglaMultiHate dataset
+    _LABEL_REMAP = {'Profane': 'Abusive', 'Sexism': 'Gender Hate'}
     TARGET_LABELS = ['None', 'Individual', 'Organization', 'Community', 'Society']
     SEVERITY_LABELS = ['Little to None', 'Mild', 'Severe']
 
@@ -103,6 +106,10 @@ class BanglaHateDataset(Dataset):
                 self._normalizer = bn_normalize
             except ImportError:
                 print("Warning: 'normalizer' package not found. Skipping text normalization.")
+
+        # Remap legacy labels (Profane → Abusive, Sexism → Gender Hate)
+        for col in ['type_of_hate']:
+            self.df[col] = self.df[col].replace(self._LABEL_REMAP)
 
         print(f"[BanglaHateDataset] Loaded {len(self.df)} samples from {data_path}")
         if self.explanations:
