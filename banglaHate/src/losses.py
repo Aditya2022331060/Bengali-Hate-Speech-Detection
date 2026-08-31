@@ -68,13 +68,14 @@ class ConsistencyPenaltyLoss(nn.Module):
     This is fully differentiable and allows gradient backpropagation.
 
     Args:
-        type_none_idx (int): Index of "None" in type_of_hate label list. Default: 5.
+        type_none_idx (int): Index of "None" in type_of_hate label list. Default: 0.
+                             Must match BanglaHateDataset.TYPE_LABELS ordering.
         target_none_idx (int): Index of "None" in target_of_hate label list. Default: 0.
         sev_little_idx (int): Index of "Little to None" in severity label list. Default: 0.
         sev_severe_idx (int): Index of "Severe" in severity label list. Default: 2.
     """
 
-    def __init__(self, type_none_idx=5, target_none_idx=0,
+    def __init__(self, type_none_idx=0, target_none_idx=0,
                  sev_little_idx=0, sev_severe_idx=2):
         super().__init__()
         self.type_none_idx = type_none_idx
@@ -85,7 +86,7 @@ class ConsistencyPenaltyLoss(nn.Module):
     def forward(self, type_logits, target_logits, severity_logits):
         """
         Args:
-            type_logits: Shape (batch_size, 6) — raw logits for hate type
+            type_logits: Shape (batch_size, 5) — raw logits for hate type
             target_logits: Shape (batch_size, 5) — raw logits for target
             severity_logits: Shape (batch_size, 3) — raw logits for severity
         Returns:

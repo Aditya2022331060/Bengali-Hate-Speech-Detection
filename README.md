@@ -47,6 +47,8 @@ The `ConsistencyPenaltyLoss` enforces:
 
 ## 📊 Phase 1 Results (exp1 vs exp2)
 
+> ⚠️ **Note:** These results are from the original 6-class taxonomy. Re-training with the updated 5-class taxonomy is pending.
+
 | Metric | exp1: Baseline | exp2: + Consistency |
 |--------|:--------------:|:-------------------:|
 | Type F1 | 0.5237 | 0.5242 |
@@ -171,11 +173,10 @@ The file `silver_explanations.csv` contains **2,000 AI-generated Bengali explana
 | Class | Count |
 |-------|------:|
 | None | 19,954 |
-| Abusive | 8,212 |
+| Abusive | 10,543 |
 | Political Hate | 4,227 |
-| Profane | 2,331 |
 | Religious Hate | 676 |
-| Sexism | 122 |
+| Gender Hate | 122 |
 
 ---
 
