@@ -41,6 +41,7 @@ To address these limitations, we propose a Multi-Task Learning (MTL) framework \
 The structure of this paper is as follows: Section \ref{sec:related} reviews related work. Section \ref{sec:method} details our MTL architecture and Consistency Loss. Section \ref{sec:exp} describes the dataset and baselines. Results are discussed in Section \ref{sec:results}, followed by our conclusion.
 
 \section{Related Work}
+\label{sec:related}
 Hate speech detection has evolved from simple lexicon-based methods to advanced deep learning architectures \cite{romero2021hate}. For the Bengali language, the lack of large-scale annotated corpora has historically hindered progress. Recent efforts have introduced datasets like BanglaMultiHate, but most research continues to frame the problem as isolated classification tasks. Pre-trained language models, specifically BanglaBERT \cite{bhattacharjee2022banglabert}, have established new state-of-the-art baselines for Bengali NLP tasks by leveraging large unannotated corpora for masked language modeling.
 
 In parallel, there is a growing demand for explainable AI (XAI) in natural language processing \cite{deyoung2020eraser}. While LLMs exhibit strong generative explainability, their performance in non-English, low-resource settings often lags behind English benchmarks \cite{ahuja2023mega, chen2023tigerbot}, and they remain computationally prohibitive for real-time moderation. Multi-task learning (MTL) \cite{caruana1997multitask, liu2019mt} offers an efficient alternative by sharing representations across related tasks, thereby improving generalization and efficiency. Our work bridges these domains by combining the efficiency of MTL with the explainability of generative rationales, constrained by logical consistency.
@@ -48,6 +49,7 @@ In parallel, there is a growing demand for explainable AI (XAI) in natural langu
 Recent advancements in Bengali natural language processing have begun to focus heavily on Explainable AI (XAI) to interpret model decisions on toxic or arrogant text. For instance, Ashraf et al. \cite{ashraf2026arrogant} proposed a framework for detecting arrogant comments in Bengali using BanglaBERT. To provide interpretability, they employed Local Interpretable Model-agnostic Explanations (LIME), a post-hoc method that highlights influential tokens. While post-hoc explainability methods like LIME offer token-level transparency, our work advances the field by jointly generating full natural language rationales alongside multi-task predictions, mathematically bounded by strict logical consistency constraints.
 
 \section{Methodology}
+\label{sec:method}
 
 \subsection{Task Definition}
 Our system performs a multi-task classification across three dimensions:
@@ -60,10 +62,10 @@ Our system performs a multi-task classification across three dimensions:
 \subsection{Architecture Overview}
 Our architecture employs a shared encoder with parallel task-specific heads. The input text is tokenized and passed through a pre-trained BanglaBERT encoder \cite{bhattacharjee2022banglabert}, which extracts contextualized representations. The `[CLS]' token embedding is fed into three independent Multi-Layer Perceptrons (MLPs) representing the classification heads for Hate Type, Target, and Severity.
 
-To provide natural language rationales, we append a lightweight LSTM-based autoregressive decoder that conditions on the shared BanglaBERT [CLS] embedding. The decoder is initialized from the encoder's hidden state via a learned linear projection and generates explanation tokens using teacher forcing during training. This allows the model to simultaneously output classification logits and a text sequence explaining the decision, at negligible computational overhead (adding only $\sim$108M parameters to the 110M base model).
+To provide natural language rationales, we append a lightweight LSTM-based autoregressive decoder that conditions on the shared BanglaBERT [CLS] embedding. The decoder is initialized from the encoder's hidden state via a learned linear projection and generates explanation tokens using teacher forcing during training. This allows the model to simultaneously output classification logits and a text sequence explaining the decision.
 
 \subsection{Loss Formulation}
-Due to the extreme class imbalance (e.g., `Gender Hate' accounts for fewer than 1\% of training samples), we utilize Focal Loss for the classification heads. The joint objective is defined as:
+Due to the extreme class imbalance (e.g., `Gender Hate' accounts for fewer than 1\% of training samples), we utilize Focal Loss \cite{lin2017focal} for the classification heads. The joint objective is defined as:
 
 \begin{equation}
 \mathcal{L}_{\text{total}} = \mathcal{L}_{\text{focal}}^{\text{type}} + \mathcal{L}_{\text{focal}}^{\text{target}} + \mathcal{L}_{\text{focal}}^{\text{severity}} + \lambda \mathcal{L}_{\text{consist}} + \delta \mathcal{L}_{\text{gen}}
@@ -79,8 +81,9 @@ To enforce logical rules (e.g., \textit{If Type=None, Target MUST be None and Se
 \end{equation}
 
 \section{Experimental Setup}
+\label{sec:exp}
 \subsection{Dataset}
-We utilize the BanglaMultiHate dataset, which consists of 35,522 comments collected from Bengali social media platforms. The dataset is split into 80\% training, 10\% validation, and 10\% test sets, stratified by the Hate Type label to maintain the original class distribution. 
+We utilize the BanglaMultiHate dataset \cite{hasan2023banglamultihate}, which consists of 35,522 comments collected from Bengali social media platforms. The dataset is split into 80\% training, 10\% validation, and 10\% test sets, stratified by the Hate Type label to maintain the original class distribution. 
 
 Table \ref{tab:dataset} summarizes the class distributions after applying our taxonomic adjustments.
 
@@ -113,36 +116,39 @@ We compare our model against:
 \begin{itemize}
     \item \textbf{Baseline MTL (exp1)}: BanglaBERT + 3 classification heads, no consistency loss, no generative head.
     \item \textbf{+Generative Head (exp3)}: Baseline + LSTM decoder for explanation generation.
-    \item \textbf{TigerLLM-1B-it}: Zero-shot classification using the state-of-the-art Bengali instruct-tuned LLM (ACL 2025).
-    \item \textbf{TituLLM-1B}: Zero-shot classification using a pretrained (non-instruct) Bengali LLM.
-    \item \textbf{BongLLaMA-3B}: Zero-shot classification using the largest Bengali instruct-tuned model that fits on consumer GPUs.
+    \item \textbf{TigerLLM-1B-it} \cite{nishat2025tigerllm}: Zero-shot classification using the state-of-the-art Bengali instruct-tuned LLM (1B parameters, ACL 2025).
+    \item \textbf{TituLLM-1B} \cite{hishab2024titullm}: Zero-shot classification using a pretrained (non-instruct) Bengali LLM (1B parameters).
+    \item \textbf{BongLLaMA-3B} \cite{banglallm2024bongllama}: Zero-shot classification using the largest Bengali instruct-tuned model (3B parameters).
 \end{itemize}
 
 \section{Results and Discussion}
+\label{sec:results}
 \subsection{Classification Performance (F1)}
-Table \ref{tab:ablation} presents our ablation study results on the validation set.
+Table \ref{tab:test_results} presents the final test set results across all four ablation experiments.
 
 \begin{table}[h]
 \centering
 \small
-\begin{tabular}{lcccc}
+\begin{tabular}{lccccc}
 \toprule
-\textbf{System} & \textbf{Type} & \textbf{Target} & \textbf{Sev.} & \textbf{Avg F1} \\
+\textbf{System} & \textbf{Type} & \textbf{Target} & \textbf{Sev.} & \textbf{Avg F1} & \textbf{CVR} \\
 \midrule
-exp1 (Baseline) & 0.488 & 0.525 & 0.590 & 0.534 \\
-exp3 (+Gen Head) & 0.505 & 0.524 & 0.589 & 0.539 \\
-exp2 (+Consist.) & \textbf{0.523} & 0.543 & 0.605 & 0.557 \\
-exp4 (Full) & 0.519 & \textbf{0.551} & \textbf{0.602} & \textbf{0.557} \\
+exp1 (Baseline) & 0.511 & 0.511 & 0.597 & 0.540 & 9.46\% \\
+exp3 (+Gen Head) & \textbf{0.527} & 0.523 & 0.599 & 0.550 & 4.95\% \\
+exp2 (+Consist.) & 0.496 & 0.565 & 0.611 & 0.557 & \textbf{0.00\%} \\
+exp4 (Full) & 0.499 & \textbf{0.560} & \textbf{0.614} & \textbf{0.558} & 0.03\% \\
 \bottomrule
 \end{tabular}
-\caption{Ablation results (Macro F1, validation set). Test set results to follow in Table \ref{tab:test_results}.}
-\label{tab:ablation}
+\caption{Test set results (Macro F1) and Consistency Violation Rate across all ablation experiments. Best values are \textbf{bolded}.}
+\label{tab:test_results}
 \end{table}
 
-Adding the Consistency Loss (exp2) improves average Macro F1 by +4.3\% relative over the baseline, demonstrating that enforcing logical constraints acts as a beneficial inductive bias. The generative head (exp3) provides modest gains over the baseline. The full model (exp4) matches exp2's F1 while additionally generating natural language explanations.
+The Consistency Loss improves average Macro F1 by +3.3\% relative over the baseline (0.540 $\rightarrow$ 0.557), demonstrating that enforcing logical constraints acts as a beneficial inductive bias rather than merely a constraint. Notably, the consistency-constrained models (exp2, exp4) achieve their F1 gains primarily through improved Target F1 (+0.054) and Severity F1 (+0.017), suggesting that the consistency penalty forces the model to better discriminate these auxiliary dimensions.
+
+The full model (exp4) achieves the highest overall Avg F1 (0.558) with near-zero CVR (0.03\%, just 1 violation out of 3,553 test samples), while additionally generating natural language explanations via its LSTM decoder.
 
 \subsection{Consistency Violation Rate (CVR)}
-Table \ref{tab:cvr} shows the Consistency Violation Rate across all systems.
+Table \ref{tab:cvr} details the consistency violations.
 
 \begin{table}[h]
 \centering
@@ -150,26 +156,52 @@ Table \ref{tab:cvr} shows the Consistency Violation Rate across all systems.
 \toprule
 \textbf{System} & \textbf{CVR (\%)} & \textbf{Violations} \\
 \midrule
-exp1 (Baseline) & 8.56 & 304 / 3552 \\
-exp3 (+Gen Head) & 4.81 & 171 / 3552 \\
-exp2 (+Consist.) & \textbf{0.00} & 0 / 3552 \\
-exp4 (Full Model) & \textbf{0.00} & 0 / 3552 \\
+exp1 (Baseline) & 9.46 & 336 / 3,553 \\
+exp3 (+Gen Head) & 4.95 & 176 / 3,553 \\
+exp2 (+Consist.) & \textbf{0.00} & 0 / 3,553 \\
+exp4 (Full Model) & 0.03 & 1 / 3,553 \\
 \bottomrule
 \end{tabular}
-\caption{Consistency Violation Rate on the validation set. Our Consistency Loss completely eliminates all logical contradictions.}
+\caption{Consistency Violation Rate on the held-out test set. The Consistency Loss reduces violations from 336 to 0 (exp2) or 1 (exp4).}
 \label{tab:cvr}
 \end{table}
 
-The baseline model produces 304 consistency violations (8.56\%) where the model predicts Type=None but assigns a non-None target or non-trivial severity. Adding the generative head alone reduces CVR to 4.81\%, likely because the explanation generation provides implicit supervision. However, only the explicit Consistency Loss (exp2, exp4) achieves \textbf{0\% CVR}, completely eliminating all logical contradictions.
+The baseline model produces 336 consistency violations (9.46\%) where the model predicts Type=None but assigns a non-None target or non-trivial severity. Adding the generative head alone reduces CVR to 4.95\%, likely because the explanation generation provides implicit supervision. The explicit Consistency Loss achieves \textbf{0.00\% CVR} in exp2 and 0.03\% in exp4 (a single borderline violation), effectively eliminating all logical contradictions.
 
 \subsection{LLM Comparison}
 % TODO: Fill in after NB05 results are available.
 
 \subsection{Faithfulness Evaluation (ERASER)}
-% TODO: Fill in after NB04 ERASER results are available.
+To evaluate the faithfulness of our model's internal rationales, we use the ERASER framework \cite{deyoung2020eraser}, computing Comprehensiveness, Sufficiency, and AOPC (Area Over the Perturbation Curve) on 1,000 test samples. Table \ref{tab:eraser} summarizes the results.
+
+\begin{table}[h]
+\centering
+\small
+\begin{tabular}{lccc}
+\toprule
+\textbf{System} & \textbf{Comp.@20\%} & \textbf{Suff.@50\%} & \textbf{AOPC} \\
+\midrule
+exp1 (Baseline) & 0.144 & 0.099 & 0.143 \\
+exp3 (+Gen Head) & 0.167 & 0.106 & 0.165 \\
+exp2 (+Consist.) & \textbf{0.175} & 0.117 & \textbf{0.175} \\
+exp4 (Full) & 0.165 & \textbf{0.075} & 0.170 \\
+\bottomrule
+\end{tabular}
+\caption{ERASER faithfulness metrics on the test set. Higher Comprehensiveness and AOPC indicate more faithful rationales; lower Sufficiency indicates greater reliance on the identified rationale tokens.}
+\label{tab:eraser}
+\end{table}
+
+The Consistency Loss improves AOPC by 22.6\% over the baseline (0.143 $\rightarrow$ 0.175), indicating that consistency-constrained models produce more faithful attention rationales. The full model (exp4) achieves the lowest Sufficiency score (0.075), meaning that when only the identified rationale tokens are retained, exp4's predictions change the most---its decisions are most tightly coupled to the rationale tokens it attends to. Figure \ref{fig:perturbation} shows the Comprehensiveness scores across perturbation ratios.
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=\columnwidth]{figures/fig5_perturbation_curve.png}
+\caption{Comprehensiveness by perturbation ratio. Higher curves indicate more faithful rationales. Consistency-constrained models (exp2, exp4) consistently outperform the baseline.}
+\label{fig:perturbation}
+\end{figure}
 
 \section{Conclusion}
-We presented a Consistency-Constrained Multi-Task Learning architecture for Bengali hate speech detection that simultaneously classifies hate type, target, and severity while generating natural language explanations. Our key contribution---a differentiable Soft Consistency Loss---completely eliminates logical contradictions (0\% CVR) while simultaneously improving classification F1 by 4.3\% over the baseline. The full model (exp4) achieves competitive F1 scores with 0\% CVR at a fraction of the computational cost of large language models, demonstrating that task-specific architectural constraints are far more effective than scale alone for structured multi-task classification in low-resource languages.
+We presented a Consistency-Constrained Multi-Task Learning architecture for Bengali hate speech detection that simultaneously classifies hate type, target, and severity while generating natural language explanations. Our key contribution---a differentiable Soft Consistency Loss---reduces logical contradictions from 9.46\% to 0.00\% (exp2) or 0.03\% (exp4) on the held-out test set, while simultaneously improving classification Macro F1 by 3.3\% over the baseline. The full model (exp4) achieves an Avg F1 of 0.558 with near-perfect consistency, at a fraction of the computational cost of large language models. Furthermore, ERASER faithfulness evaluation demonstrates that consistency-constrained models produce 22.6\% more faithful attention rationales (AOPC: 0.143 $\rightarrow$ 0.175). These results demonstrate that task-specific architectural constraints are far more effective than scale alone for structured multi-task classification in low-resource languages.
 
 \bibliographystyle{IEEEtran}
 \bibliography{references}

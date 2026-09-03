@@ -1,0 +1,32 @@
+[
+  {
+    "comment": "মেসি বোলে কথা মেসি মেসি মেসি এবং মেসি কিছু বলতে হবে না",
+    "type": "None",
+    "target": "None",
+    "severity": "Little to None"
+  },
+  {
+    "comment": "সবাই বয়কট করুন সময় টিভি",
+    "type": "Abusive",
+    "target": "Organization",
+    "severity": "Mild"
+  },
+  {
+    "comment": "একটা পণ্য না ভাই কোন পণ্যর দাম কম বলব এই সরকার কি আর বাজার নিয়ন্ত্রণ করতে পারবে না ডাকাতি করবে",
+    "type": "Political Hate",
+    "target": "Society",
+    "severity": "Mild"
+  },
+  {
+    "comment": "সরকারের উচিত বাংলাদেশেও মন্দির ভেঙে মসজিদ করা",
+    "type": "Religious Hate",
+    "target": "Organization",
+    "severity": "Little to None"
+  },
+  {
+    "comment": "আন্দোলনটা ছিল পতিতা মহিলাদের জন্য",
+    "type": "Gender Hate",
+    "target": "Society",
+    "severity": "Severe"
+  }
+]
