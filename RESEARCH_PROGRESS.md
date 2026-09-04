@@ -125,3 +125,13 @@
    - *Mitigation*: Both zero-shot and 5-shot in-context learning evaluated. Few-shot demonstrations were sampled strictly from the training split. Multi-tier regular expression fallback parser forgave minor formatting quirks.
 3. **Risk: "Why use a specialized SLM over an LLM?"**
    - *Mitigation*: Our model is +68.8% more accurate in Macro F1, $\sim$390$\times$ faster, 10-30$\times$ smaller in parameters, 100% deterministic, and eliminates structural hallucinations.
+
+---
+
+## 6. GitHub Repository Synchronization
+
+- **Remote URL**: `https://github.com/Aditya2022331060/Bengali-Hate-Speech-Detection.git`
+- **Branch**: `main`
+- **Latest Commit**: `bbc5e6c` (*Update project with IEEE paper formatting, 24 verified references, master briefing guide, completed Kaggle notebooks, and full evaluation results*)
+- **Status**: ✅ Synced & Pushed successfully.
+
