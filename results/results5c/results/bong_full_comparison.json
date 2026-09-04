@@ -1,0 +1,38 @@
+[
+  {
+    "model": "BongLLaMA-3B-Instruct (0-shot)",
+    "type_f1": 0.1439,
+    "target_f1": 0.15,
+    "sev_f1": 0.2631,
+    "avg_f1": 0.1856,
+    "cvr_pct": 0.0,
+    "violations": 0,
+    "total_samples": 3553,
+    "latency_s": 0.218,
+    "parse_rate_pct": 0.0
+  },
+  {
+    "model": "BongLLaMA-3B-Instruct (5-shot)",
+    "type_f1": 0.1439,
+    "target_f1": 0.15,
+    "sev_f1": 0.0844,
+    "avg_f1": 0.1261,
+    "cvr_pct": 100.0,
+    "violations": 3553,
+    "total_samples": 3553,
+    "latency_s": 1.277,
+    "parse_rate_pct": 100.0
+  },
+  {
+    "model": "Ours (exp4, 110M)",
+    "type_f1": 0.4994,
+    "target_f1": 0.5598,
+    "sev_f1": 0.6136,
+    "avg_f1": 0.5576,
+    "cvr_pct": 0.03,
+    "violations": 1,
+    "total_samples": 3553,
+    "latency_s": 0.015,
+    "parse_rate_pct": 100.0
+  }
+]

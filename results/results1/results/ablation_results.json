@@ -1,0 +1,18 @@
+[
+  {
+    "Experiment": "exp1_baseline",
+    "Type F1": "0.5380",
+    "Target F1": "0.5483",
+    "Severity F1": "0.6065",
+    "Avg F1": "0.5643",
+    "CVR": "1.94%"
+  },
+  {
+    "Experiment": "exp2_consistency",
+    "Type F1": "0.5218",
+    "Target F1": "0.5558",
+    "Severity F1": "0.6078",
+    "Avg F1": "0.5618",
+    "CVR": "0.00%"
+  }
+]

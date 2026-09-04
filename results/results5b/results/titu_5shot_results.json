@@ -1,0 +1,12 @@
+{
+  "model": "TituLLM-1B (5-shot)",
+  "type_f1": 0.1803,
+  "target_f1": 0.1731,
+  "sev_f1": 0.3014,
+  "avg_f1": 0.2183,
+  "cvr_pct": 4.98,
+  "violations": 177,
+  "total_samples": 3553,
+  "latency_s": 5.274,
+  "parse_rate_pct": 21.5
+}

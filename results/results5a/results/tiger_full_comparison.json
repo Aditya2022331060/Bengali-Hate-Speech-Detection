@@ -1,0 +1,38 @@
+[
+  {
+    "model": "TigerLLM-1B-it (0-shot)",
+    "type_f1": 0.2256,
+    "target_f1": 0.1851,
+    "sev_f1": 0.3557,
+    "avg_f1": 0.2554,
+    "cvr_pct": 0.42,
+    "violations": 15,
+    "total_samples": 3553,
+    "latency_s": 4.634,
+    "parse_rate_pct": 95.6
+  },
+  {
+    "model": "TigerLLM-1B-it (5-shot)",
+    "type_f1": 0.3572,
+    "target_f1": 0.2591,
+    "sev_f1": 0.3747,
+    "avg_f1": 0.3303,
+    "cvr_pct": 1.32,
+    "violations": 47,
+    "total_samples": 3553,
+    "latency_s": 5.851,
+    "parse_rate_pct": 99.1
+  },
+  {
+    "model": "Ours (exp4, 110M)",
+    "type_f1": 0.4994,
+    "target_f1": 0.5598,
+    "sev_f1": 0.6136,
+    "avg_f1": 0.5576,
+    "cvr_pct": 0.03,
+    "violations": 1,
+    "total_samples": 3553,
+    "latency_s": 0.015,
+    "parse_rate_pct": 100.0
+  }
+]

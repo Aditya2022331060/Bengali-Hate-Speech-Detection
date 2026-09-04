@@ -1,0 +1,12 @@
+{
+  "model": "TigerLLM-1B-it (5-shot)",
+  "type_f1": 0.3572,
+  "target_f1": 0.2591,
+  "sev_f1": 0.3747,
+  "avg_f1": 0.3303,
+  "cvr_pct": 1.32,
+  "violations": 47,
+  "total_samples": 3553,
+  "latency_s": 5.851,
+  "parse_rate_pct": 99.1
+}

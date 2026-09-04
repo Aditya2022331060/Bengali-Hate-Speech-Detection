@@ -1,0 +1,12 @@
+{
+  "model": "BongLLaMA-3B-Instruct (0-shot)",
+  "type_f1": 0.1439,
+  "target_f1": 0.15,
+  "sev_f1": 0.2631,
+  "avg_f1": 0.1856,
+  "cvr_pct": 0.0,
+  "violations": 0,
+  "total_samples": 3553,
+  "latency_s": 0.218,
+  "parse_rate_pct": 0.0
+}

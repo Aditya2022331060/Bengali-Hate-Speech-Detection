@@ -1,0 +1,1 @@
+{"repos": [{"repoId": "md-nishat-008/TigerLLM-1B-it", "repoType": "model", "commitHash": "bc84e6d99559f05470324150444b63e702d3dd53", "filePaths": ["tokenizer.json", "chat_template.jinja", "special_tokens_map.json", "added_tokens.json", "tokenizer_config.json", "config.json", "generation_config.json", "model.safetensors"]}]}

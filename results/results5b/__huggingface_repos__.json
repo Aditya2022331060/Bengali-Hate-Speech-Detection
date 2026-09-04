@@ -1,0 +1,1 @@
+{"repos": [{"repoId": "hishab/titulm-llama-3.2-1b-v2.0", "repoType": "model", "commitHash": "cf9ebaf81f39560a6fa4dfead3fe1159d8a4d663", "filePaths": ["model.safetensors", "config.json", "tokenizer_config.json", "special_tokens_map.json", "tokenizer.json"]}]}

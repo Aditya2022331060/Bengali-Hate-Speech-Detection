@@ -1,7 +1,7 @@
-# Python / PyTorch gitignore
+# Python / PyTorch
 __pycache__/
 *.py[cod]
-*$py.class
+*.class
 *.so
 .Python
 env/
@@ -9,11 +9,15 @@ venv/
 ENV/
 .venv
 
-# Model checkpoints & large downloads
-banglaHate/models/*.pt
+# Model checkpoints & large files (>10MB)
+*.pt
+*.pth
 *.bin
 *.safetensors
 *.zip
+*.tar.gz
+*.h5
+*.ckpt
 
 # Temporary scripts / logs
 scratch/
@@ -29,3 +33,6 @@ run_smoke.py
 .idea/
 .DS_Store
 Thumbs.db
+
+# Redundant dataset copies in results
+results/**/data/
